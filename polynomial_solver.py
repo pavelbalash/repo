@@ -315,10 +315,10 @@ def deduplicate(roots: List[float]) -> List[float]:
     return unique
 
 
-def solve_equation(coeffs: List[float]) -> List[float | int]:
+def solve_equation(coeffs: List[float]) -> Optional[List[float | int]]:
     if all(abs(c) < EPS for c in coeffs):
         print("Any number is a solution")
-        return []
+        return None
 
     while len(coeffs) > 1 and abs(coeffs[0]) < EPS:
         coeffs.pop(0)
@@ -328,7 +328,7 @@ def solve_equation(coeffs: List[float]) -> List[float | int]:
             print("Any number")
         else:
             print("No solutions")
-        return []
+        return None
 
     result: List[float] = []
 
@@ -369,7 +369,8 @@ def solve_equation(coeffs: List[float]) -> List[float | int]:
         )
 
         if root is None:
-            print("Could not find a root numerically for the current polynomial")
+            if not result:
+                print("Could not find a root numerically for the current polynomial")
             break
 
         stabilized = stabilize_root(coeffs, root)
@@ -403,7 +404,8 @@ def main() -> None:
     while True:
         coeffs = input_coefficients()
         roots = solve_equation(coeffs)
-        print(f"Roots: {roots}")
+        if roots is not None:
+            print(f"Roots: {roots}")
 
         answer = input("Continue? (no/something else) ").strip().lower()
         if answer == "no":
